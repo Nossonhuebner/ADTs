@@ -1,5 +1,8 @@
 class HashSet
-
+  # same as class ResizingIntSet, but values can be non-integers and are evenly distributed (avg).
+  #include: O(1)
+  #insert: O(1)
+  #remove: O(1)
   def initialize(num_buckets = 8)
     @store = Array.new(num_buckets) { Array.new }
     @count = 0

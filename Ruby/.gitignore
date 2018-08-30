@@ -2,3 +2,4 @@ lib/
 spec/
 Gemfile
 Gemfile.lock
+.byebug_history
