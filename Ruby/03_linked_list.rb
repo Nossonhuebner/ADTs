@@ -19,6 +19,9 @@ end
 
 
 class LinkedList
+  #include: O(n)
+  #insert: O(n)
+  #remove: O(n)
   include Enumerable
 
   def initialize
@@ -70,13 +73,15 @@ class LinkedList
     new_node.prev = @tail.prev
     new_node.prev.next = new_node
     @tail.prev = new_node
+
+    new_node
   end
 
   def update(key, val)
     self.each do |node|
       if node.key == key
         node.val = val
-        break
+        return node
       end
     end
   end
@@ -85,7 +90,7 @@ class LinkedList
     self.each do |node|
       if node.key == key
         node.remove
-        break
+        return node
       end
     end
   end

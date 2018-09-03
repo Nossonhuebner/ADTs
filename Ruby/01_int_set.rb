@@ -75,7 +75,7 @@ end
 
 class ResizingIntSet
   #contains an arbitrary range of integers, with a fixed number of buckets to store them in.
-  #operations will be done in O(1) since num_buckets will always be <= n, (O(n/n)).
+  #operations will be done in O(1) since num_buckets will always be <scale with n, (O(n/n)).
   #a resize will be O(n) but amortized time will remain constant.
   #include: O(1)
   #insert: O(1)
