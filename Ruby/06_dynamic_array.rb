@@ -1,3 +1,4 @@
+require 'byebug'
 class StaticArray
   def initialize(capacity)
     @store = Array.new(capacity)
@@ -24,31 +25,25 @@ class StaticArray
   end
 end
 
-
-
 class DynamicArray
-  include Enumerable
+  attr_reader :count
 
   def initialize(capacity = 8)
     @store = StaticArray.new(capacity)
     @count = 0
-    @start_index = 0
   end
 
   def [](i)
-    return nil if i >= capacity
+    return nil if i > @count || i < 0
     @store[i]
   end
 
   def []=(i, val)
-    if i < capacity
-      @store[i] = val
-    else
-      while capacity < i
-        resize!
-      end
-      @store[i] = val
+    until i < @store.length
+      resize!
     end
+    @store[i] = val
+    @count = i
   end
 
   def capacity
@@ -56,32 +51,43 @@ class DynamicArray
   end
 
   def include?(val)
-    self.each {|el| return true if el == val}
+    self.each { |el| return true if el == val}
     false
   end
 
   def push(val)
     @store[@count] = val
     @count += 1
-    resize! if @count == capacity
   end
 
   def unshift(val)
-    if @start_index > 0
-      @start_index -= 1
-      @store[@start_index] = val
-    else
-
+    store = @store
+    @store = StaticArray.new(capacity + 1)
+    @store[0] = val
+    i = 0
+    while i < store.length
+      self.push(store[i])
+      i += 1
     end
   end
 
   def pop
     return nil if @count = 0
-    @start_index += 1
+
+    popped = last
+    last = nil
+    @count -= 1
+    popped
   end
 
   def shift
-    return nil if @count = 0
+    store = @store
+    @store = StaticArray.new(capacity)
+    i = 1
+    while i < store.length
+      self.push(store[i])
+      i += 1
+    end
   end
 
   def first
@@ -89,13 +95,13 @@ class DynamicArray
   end
 
   def last
-    @store[capacity-1]
+    @store[@count-1]
   end
 
   def each
-    i = @start_index
-    while i < @store.length
-      yield (@store[i])
+    i = 0
+    while i < @count
+      yield @store[i]
       i += 1
     end
   end
@@ -106,12 +112,7 @@ class DynamicArray
 
   def ==(other)
     return false unless [Array, DynamicArray].include?(other.class)
-    i = 0
-    while i < capacity
-      return false unless self[i] == other[i]
-      i += 1
-    end
-    true
+    # ...
   end
 
   alias_method :<<, :push
@@ -120,11 +121,11 @@ class DynamicArray
   private
 
   def resize!
-    old_store = @store
+    store = @store
     @store = StaticArray.new(capacity * 2)
-    i = @start_index
-    while i < @count
-      @store[i] = old_store[i]
+    i = 0
+    while i < store.length
+      self.push(store[i])
       i += 1
     end
   end
