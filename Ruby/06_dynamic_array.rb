@@ -21,11 +21,13 @@ class StaticArray
   private
 
   def validate!(i)
+
     raise "Overflow error" unless i.between?(0, @store.length - 1)
   end
 end
 
 class DynamicArray
+  include Enumerable
   attr_reader :count
 
   def initialize(capacity = 8)
@@ -34,8 +36,8 @@ class DynamicArray
   end
 
   def [](i)
-    return nil if i > @count || i < 0
-    @store[i]
+    return nil if i > @count || i < -@count
+    return i >= 0 ? @store[i] : @store[@count+i]
   end
 
   def []=(i, val)
@@ -56,38 +58,44 @@ class DynamicArray
   end
 
   def push(val)
+    resize! if @count == @store.length
     @store[@count] = val
     @count += 1
   end
 
   def unshift(val)
-    store = @store
+    old_store = @store
     @store = StaticArray.new(capacity + 1)
-    @store[0] = val
+    @count = 0
+    self.push(val)
     i = 0
-    while i < store.length
-      self.push(store[i])
+    while i < old_store.length
+      self.push(old_store[i])
       i += 1
     end
   end
 
   def pop
-    return nil if @count = 0
-
+    return nil if @count == 0
     popped = last
-    last = nil
     @count -= 1
+    @store[@count] = nil
     popped
   end
 
   def shift
-    store = @store
+    return nil if @count == 0
+
+    old_store, old_count = @store,  @count
     @store = StaticArray.new(capacity)
+    @count = 0
+
     i = 1
-    while i < store.length
-      self.push(store[i])
+    while i < old_count
+      self.push(old_store[i])
       i += 1
     end
+    old_store[0]
   end
 
   def first
@@ -112,7 +120,11 @@ class DynamicArray
 
   def ==(other)
     return false unless [Array, DynamicArray].include?(other.class)
-    # ...
+    return false if count != other.count
+    self.each_with_index do |el, i|
+      return false unless self[i] == other[i]
+    end
+    @store
   end
 
   alias_method :<<, :push
@@ -121,11 +133,13 @@ class DynamicArray
   private
 
   def resize!
-    store = @store
+    old_store, old_count = @store, @count
     @store = StaticArray.new(capacity * 2)
+    @count = 0
+
     i = 0
-    while i < store.length
-      self.push(store[i])
+    while i < old_count
+      self.push(old_store[i])
       i += 1
     end
   end
