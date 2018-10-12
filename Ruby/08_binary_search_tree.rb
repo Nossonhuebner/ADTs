@@ -27,11 +27,13 @@ class Node
 
   def search(value)
     if self.val == value
-      return self
-    elsif value < self.val
-      left ? left.search(value) : nil
-    else
-      right ? right.search(value) : nil
+      return self.val
+    elsif value < self.val && left
+      found = left.search(value)
+      return "#{self.val} -> #{found}" if found
+    elsif right
+      found = right.search(value)
+      return "#{self.val} -> #{found}" if found
     end
   end
 end
