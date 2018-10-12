@@ -1,15 +1,14 @@
 class Queue
-
   def initialize
     @store = []
   end
 
-  def push(el)
+  def enqueue(el)
     @store.push(el)
   end
 
-  def pop
-    @store.pop
+  def dequeue
+    @store.shift
   end
 end
 
@@ -23,6 +22,6 @@ class Stack
   end
 
   def pop
-    @store.shift
+    @store.pop
   end
 end
