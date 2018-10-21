@@ -1,4 +1,3 @@
-require 'byebug'
 class StaticArray
   def initialize(capacity)
     @store = Array.new(capacity)
@@ -21,7 +20,6 @@ class StaticArray
   private
 
   def validate!(i)
-
     raise "Overflow error" unless i.between?(0, @store.length - 1)
   end
 end
@@ -36,16 +34,30 @@ class DynamicArray
   end
 
   def [](i)
-    return nil if i > @count || i < -@count
-    return i >= 0 ? @store[i] : @store[@count+i]
+    i = validator(i)
+    return nil if !i || i > @count
+    @store[i]
   end
 
   def []=(i, val)
+    i = validator(i)
+    return nil unless i
+
     until i < @store.length
       resize!
     end
     @store[i] = val
     @count = i
+  end
+
+  def validator(i)
+    if i >= 0
+      i
+    elsif i < -@count
+      return nil
+    else
+      i + @count
+    end
   end
 
   def capacity
