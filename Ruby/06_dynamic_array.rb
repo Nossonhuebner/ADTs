@@ -1,3 +1,4 @@
+require 'byebug'
 class StaticArray
   def initialize(capacity)
     @store = Array.new(capacity)
@@ -43,11 +44,12 @@ class DynamicArray
     i = validator(i)
     return nil unless i
 
-    until i < @store.length
+    while i >= @store.length
       resize!
     end
+    debugger
     @store[i] = val
-    @count = i
+    @count = i + 1 if i >= @count
   end
 
   def validator(i)
@@ -156,3 +158,12 @@ class DynamicArray
     end
   end
 end
+
+# if $PROGRAM_NAME == __FILE__
+#   a = DynamicArray.new(2)
+#   i = 0
+#   while i < 20
+#     a.push(i)
+#     i += 1
+#   end
+# end
