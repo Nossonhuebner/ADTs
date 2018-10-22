@@ -47,7 +47,6 @@ class DynamicArray
     while i >= @store.length
       resize!
     end
-    debugger
     @store[i] = val
     @count = i + 1 if i >= @count
   end
@@ -158,12 +157,3 @@ class DynamicArray
     end
   end
 end
-
-# if $PROGRAM_NAME == __FILE__
-#   a = DynamicArray.new(2)
-#   i = 0
-#   while i < 20
-#     a.push(i)
-#     i += 1
-#   end
-# end
